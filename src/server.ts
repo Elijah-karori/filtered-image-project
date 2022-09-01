@@ -40,26 +40,23 @@ import { promises } from 'dns';
   
   //filtered image endpoint
   //return a filtered image to user query
- app.get("/filteredimage/",  async(req, res)=>{
-    const image_url = req.query.image_url;
-    
-      if (!image_url){
-        res.status(400)
-        res.send('enter a url')
-      }
-      else{
-        console.log(image_url);
-        try {
-          const imgUrl=await filterImageFromURL(String(image_url))
-          res.status(200)
-          .sendFile(imgUrl)
-        } catch (error) {
-          res.send('error')
-          console.error(error)
+  app.get("/filteredimage/",  async(req:express.Request, res:express.Response)=>{
+    const image_url = req.query.image_url ;
+      image_url as string;
+        if (!image_url){
+          res.status(400).send('enter a url')
         }
-      }
-  })
-
+        else{
+          console.log(image_url);
+          try {
+            const imgUrl=await filterImageFromURL(String(image_url))
+            res.status(200).sendFile(imgUrl)
+          } catch (error) {
+            res.status(500).send('error')
+            console.error(error)
+          }
+        }
+    })
   // Start the Server
   app.listen( port, () => {
       console.log( `server running http://localhost:${ port }` );
